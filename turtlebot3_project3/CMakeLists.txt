@@ -74,6 +74,8 @@ install(DIRECTORY include/
 # Install python scripts
 install(PROGRAMS 
   scripts/teleop.py
+  scripts/p1pygame.py
+  scripts/p2sim.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
