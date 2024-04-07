@@ -17,12 +17,9 @@ Python Libraries used for A*
 _Link_ - https://github.com/ruthwikdasyam/A_Star_Project_32.git
 
 ### Instructions
-<<<<<<< HEAD
 
 Directly run the code {p1_ruthwik_zahir.py} in terminal or in code editor(s) (VScode, PyCharm)
-=======
-Directly run the code {a_star_ruthwik_zahiruddin.py} in terminal or in code editor(s) (VScode, PyCharm)
->>>>>>> 00c47c494f5fa1a55483a28c55741782a673706e
+
 
 Map Dimensions - _600cm x 200cm_
  
