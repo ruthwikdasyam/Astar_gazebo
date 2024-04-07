@@ -8,7 +8,6 @@ import select
 import tty
 import termios
 import time
-from pynput import keyboard
 import p1pygame
 
 #importing from pyagme code
