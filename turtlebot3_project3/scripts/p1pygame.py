@@ -20,7 +20,7 @@ print("\n-----------------------------------------------------------------------
 #point consists of x and y coordinate
 # Global Constants
 wheel_radius = 3.3 # r
-track_width = 28.7 # L
+track_width = 28.7 # L 
 no_of_nodes = 0
 weight = 1
 class node_class:
@@ -170,7 +170,7 @@ print("******* Map **********")
 
 print("Input Clearence Value ---")
 # clearence = int(input(" "))
-clearence = 5
+clearence = 1
 
 print("Input Robot Radius")
 # robot_radius = int(input(" "))
@@ -228,13 +228,38 @@ for i,j in corner_obstacle_pixels:
 
 # validate=[]
 
+def perimeter(a,b):
+    perimeter_points = []
+    angles=[]
+    for i in range(36):
+        angles.append((2*np.pi)*i/36)
+    for angle in angles:
+        new_x = a+round(11*np.cos(angle))
+        new_y = b+round(11*np.sin(angle))
+        if 0<= new_x <= 599 and 0<= new_y <=199:
+            perimeter_points.append((new_x, new_y))
+    return perimeter_points
+
+
+need_to_check_points = []
+for a in range(600):
+    for b in range(200):
+      if matrix[a,b,0] == 0:
+        perimeter_points = perimeter(a,b)
+        for i,j in perimeter_points:  
+            if matrix[i,j,0] == 1:
+                need_to_check_points.append((a,b))
+                break
+            
+
+
 def rotate_point(x, y, theta):
     theta = np.radians(theta)
     rotated_x = x * np.cos(theta) - y * np.sin(theta)
     rotated_y = x * np.sin(theta) + y * np.cos(theta)
     return round(rotated_x), round(rotated_y)
 
-# print("going in pedda loop")
+print("going in pedda loop")
 robot_clearence=np.zeros((600,200,12))
 
 for theta in range(0, 12):
@@ -251,9 +276,12 @@ for theta in range(0, 12):
             # window.set_at((50+i,+199-j-50),(0,0,0))
             points_set.append((x,y))
     # print("points set ", len(points_set))
-    for a in range(600):
-        for b in range(200):
-            if matrix[a,b,0] == 0:
+    # for a in range(600):
+    #     for b in range(200):
+    #       if robot_clearence[a,b,theta]==0:
+
+    #         if matrix[a,b,0] == 0:
+    for a,b in need_to_check_points:
             #for a single point, at a single orentation
                 for i,j in points_set:
                     x = i+a
@@ -261,6 +289,8 @@ for theta in range(0, 12):
                     if 0<=x<600 and 0<=y<200:
                         if matrix[x,y,0]!=0:
                             robot_clearence[a,b,theta]=1
+                            # robot_clearence[a,b,(theta+1)%12]=1
+                            # robot_clearence[a,b,theta-1]=1
                             # validate.append((a,b))
                             break
 
