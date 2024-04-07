@@ -212,7 +212,7 @@ for theta in range(0, 12):
     # looping through all the states in canvas, for every thets position
     for a in range(600):
         for b in range(200):
-          if robot_clearence[a,b,theta]==0:
+        #   if robot_clearence[a,b,theta]==0:
 
             if matrix[a,b,0] == 0: # extracting all points in robots perimeter, at a particular angle
                 for i,j in points_set:

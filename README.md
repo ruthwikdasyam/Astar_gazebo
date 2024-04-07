@@ -21,7 +21,7 @@ _Link_ - https://github.com/ruthwikdasyam/A_Star_Project_32.git
 
 ### Instructions
 
-Directly run the code {a_star_ruthwik_zahiruddin.py} in terminal or in code editor(s) (VScode, PyCharm)
+Directly run the code {p1_ruthwik_zahir.py} in terminal or in code editor(s) (VScode, PyCharm)
 
 Map Dimensions - _600cm x 200cm_
  
