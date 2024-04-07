@@ -17,11 +17,14 @@ Python Libraries used for A*
 
 # Part 1
 
+_Link_ - https://github.com/ruthwikdasyam/A_Star_Project_32.git
+
 ### Instructions
 
 Directly run the code {a_star_ruthwik_zahiruddin.py} in terminal or in code editor(s) (VScode, PyCharm)
 
 Map Dimensions - _600cm x 200cm_
+ 
 
 ### Inputs
 
@@ -60,7 +63,9 @@ _[Note]: The Map gets generated based on the Clearance, it might take upto 5 sec
 
 # Part 2
 
-The Simulation consists of a Turtlebot3 - Waffle Robot in a closed environment
+_Link_ - https://github.com/ruthwikdasyam/Astar_gazebo.git
+
+The Simulation consists of a Turtlebot3 - Waffle Robot in a closed environment in Gazebo
 
 The python executable computes the path and visualizes in Pygame window
 
@@ -133,13 +138,18 @@ _[Note]: The Map gets generated based on the Clearance, it might take upto 5 sec
 
 
 
-
-
 - Wait for the Algorithm to run
 - Once Goal Node is found, Backtracking is executed
 - The pygame window displays the nodes explored and path from start to end node
 - Close the pygame window to exit
 - Gazebo will automatically fires up turtlebot and you can see turtlebot following the same path, that is shown
+
+
+#### _[Important Note]_
+* Sometimes the Robot in Gazebo might fail to travel in the path, this is dependent on Real Time Factor of Gazebo which affects the rate of publishing velocities
+
+    [In the submitted video, the "_Real Time Factor is 1_" and ]
+
 
 
 
