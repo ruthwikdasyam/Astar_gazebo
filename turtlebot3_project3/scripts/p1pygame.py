@@ -8,9 +8,9 @@ import numpy as np
 import pygame
 import time
 
-print("\n--------------------------------------------------------------------------\n")
+print("\n-----------------------------------------------------------------------\n")
 print("                        A* PATH PLANNING                                ")
-print("\n--------------------------------------------------------------------------\n")
+print("\n-----------------------------------------------------------------------\n")
 
 
 #__________________________________________________________________________________________________________________
@@ -23,11 +23,12 @@ wheel_radius = 3.3 # r
 track_width = 28.7 # L 
 no_of_nodes = 0
 weight = 1
+
+#Class Node
 class node_class:
     all_states = []
     def __init__(self, C2C : float, C2G : float, Node_Index: int, Parent_Index: int, State: np.array) -> None:
         #Assign to Self Object
-        # self.Total_Cost = Total_Cost #Total Cost
         self.C2C = C2C  # Cost to come
         self.C2G = C2G  # Cost to goal
         self.Node_Index = Node_Index # Node index
@@ -36,88 +37,53 @@ class node_class:
         global no_of_nodes
         node_class.all_states.append(self)
         no_of_nodes += 1
-
+    
+    # function for representation
     def __repr__(self):
         return f"{self.C2C}, {self.C2G}, {self.Node_Index}, {self.Parent_Index}, {self.Node_State}" # Defining representation of object to be its state, index and parent index
-        # return f"{self.Total_Cost}, {self.C2G}, {self.C2C}, {self.Node_Index}, {self.Parent_Index}, {self.Node_State}" # Defining representation of object to be its state, index and parent index
-
+      
+    # function fot comparision  
     def __lt__(self, other):
-        # First, try to compare based on C2C
-        # if self.C2G + self.C2C != other.C2G + other.C2C:
-        #     return self.C2G + self.C2C < other.C2G + other.C2C
-        
+        # First, try to compare based on total cost
         if weight*self.C2G + self.C2C != weight*other.C2G + other.C2C:
             return weight*self.C2G + self.C2C < weight*other.C2G + other.C2C
-        
+        # C2G comparision
         elif self.C2G != other.C2G:
             return self.C2G < other.C2G
-        # If costs are equal, then compare based on Node_Index
+        # If total cost and C2G are equal, then compare based on C2C
         return self.C2C < other.C2C
 
-        # elif self.C2C != self.C2C:
-        #     return self.C2C < other.C2C
-        # # If costs are equal, then compare based on Node_Index
-        # return self.C2G < other.C2G
-# defining
-    # def sc(self):
-    #     state=self.Node_State.copy()
-    #     # state[0], state[1], state[2] = state[0], state[1], state[2]
-    #     if state[0]%1 <= 0.5:
-    #         state[0] = int(state[0]//1)
-    #     else:
-    #         state[0] = int((state[0]//1)+1)
-    #     if state[1]%1<= 0.5:
-    #         state[1] = int(state[1]//1)
-    #     else:
-    #         state[1] = int((state[1]//1)+1)
-    #     if state[2]%30 <=15:
-    #         state[2] = int(state[2] - state[2]%30)%360
-    #     else:
-    #         state[2] = int(state[2] + 30 - state[2]%30)%360
-    #     state[2] = state[2]//30    
-    #     return state
-
-
+    #function returning a child, for input parent and action
     def child(self,ul,ur):
         ontheway=[]
         Node_State = (self.Node_State).copy()
         total = 0
         step =0
-        dt = timestep/10
+        dt = timestep/10 # total of 10 lines
         Xn = Node_State[0]
         Yn = Node_State[1]
         thetan = Node_State[2]
-        thetan = (3.14/180)*thetan
+        thetan = (3.14/180)*thetan 
         ontheway.append((Xn, 199-Yn)) # only for display
         while total<10:
-            total += 1
+            total += 1 # total no of lines that give a curve
             Xs = Xn
             Ys = Yn
             thetan += (wheel_radius/track_width)*(ur - ul)*dt
-            Xn += (wheel_radius/2)*(ul+ur)*np.cos(thetan)*dt
-            Yn += (wheel_radius/2)*(ul+ur)*np.sin(thetan)*dt
+            Xn += (wheel_radius/2)*(ul+ur)*np.cos(thetan)*dt # updating x
+            Yn += (wheel_radius/2)*(ul+ur)*np.sin(thetan)*dt # updating y
             ontheway.append((Xn, 199-Yn)) # only for display
-            step+= np.sqrt((Xn-Xs)**2+(Yn-Ys)**2)
+            step+= np.sqrt((Xn-Xs)**2+(Yn-Ys)**2) # calculating length of curve
 
             # pygame.draw.line(window, (0,0,0), (Xs, Ys), (Xn, Yn) , width=1)
-        thetan = (180/3.14)*thetan
-        new_state = [Xn, Yn, thetan]
-        return new_state, ontheway, step
+        thetan = (180/3.14)*thetan # theta in degrees
+        new_state = [Xn, Yn, thetan] # final state and orentation
+        return new_state, ontheway, step # reutning new state, all points on  the way, step= length of curve
 
-
-    # def Actions(Step_Size, self): # Combining all Actions into a single action
-    #     children=[]
-    #     children.append(node_class.Forward(Step_Size, self))
-    #     children.append(node_class.Left(Step_Size, self))
-    #     children.append(node_class.ForwardLeft(Step_Size, self))
-    #     children.append(node_class.ForwardRight(Step_Size, self))
-    #     children.append(node_class.Right(Step_Size, self))
-    #     return children # Returns list of all the children with their cost
-
-
+    #checking if a node is goal node
     def ifgoalstate(self, Goal_Threshold, Goal_State):
+        # finding distance from goal state to current, considering goal threshold
         dist = np.sqrt((self.Node_State[0]-Goal_State[0])**2+(self.Node_State[1]-Goal_State[1])**2)
-        # angle_diff = abs(self.Node_State[2] - Goal_State[2])
         if dist < Goal_Threshold:
             return True
         else:
@@ -138,45 +104,41 @@ def backtrack(closedlist): # Function for backtracking
                 break
             
     states.append(start_state)
-    states.reverse()
+    states.reverse() # reversing the list
     return states
 
-
+# fuction for state correction to put nodes in any one of the node in 600*200*12
 def sc(Node):
     state=Node.copy()
     # state[0], state[1], state[2] = state[0], state[1], state[2]
-    if state[0]%1 <= 0.5:
+    if state[0]%1 <= 0.5: # approximating x value
         state[0] = int(state[0]//1)
     else:
         state[0] = int((state[0]//1)+1)
-    if state[1]%1<= 0.5:
+    if state[1]%1<= 0.5: # approximating y value
         state[1] = int(state[1]//1)
     else:
         state[1] = int((state[1]//1)+1)
-    if state[2]%30 <=15:
+    if state[2]%30 <=15: # approximating theta
         state[2] = int(state[2] - state[2]%30)%360
     else:
         state[2] = int(state[2] + 30 - state[2]%30)%360
     state[2] = state[2]//30    
-    return state
-
+    return state # returing corrected state
 
 
 #_________________________________________________________________________________________________________________________________________________________
 #               END OF FUNCTIONS FOR ACTIONS AND BACKTRACKING 
 
 #Defining Obstacle Space
-print("******* Map **********")
+print("****************** Map *****************")
 
 print("Input Clearence Value ---")
-# clearence = int(input(" "))
-clearence = 1
+clearence = int(input(" "))
+# clearence = 5
 
-print("Input Robot Radius")
-# robot_radius = int(input(" "))
-# robot_radius = 5
 
-print(" Please wait, Preparing Map ..... ")
+print(" \nPlease wait, Preparing Map ..... ")
 
 def obstacle(x,y): # Returns value >= 1, if a point is in obstacle space
     check = 0
@@ -184,8 +146,6 @@ def obstacle(x,y): # Returns value >= 1, if a point is in obstacle space
     check +=1 if x >= 250 and x < 275 and y < 100  else 0 # 1 st obstacle
     check +=1 if (x - 420)**2 + (y-120)**2 <= 3600 else 0 # equations for lines that surround polygon
     return check 
-
-
 
 matrix = np.zeros((600,200,12)) # Defining a matrix representing canvas 1200 x 500 with zeros
 
@@ -209,7 +169,7 @@ for i in range(600): # looping through all elements in matrix
                pass
            
 # TO have 5mm clearence means no pixel which is in distance of 5 from obstacle, should be avoided
-# Below loop checks for such pixels and adjusts their matrix value to 2
+# Below loop checks for such pixels and adjusts their matrix value to 2, which means obstacle
 
 # # Loop for bloating
 for i,j in corner_obstacle_pixels:
@@ -225,161 +185,99 @@ for i,j in corner_obstacle_pixels:
                               pass
 
 
-
-# validate=[]
-
-def perimeter(a,b):
-    perimeter_points = []
-    angles=[]
-    for i in range(36):
-        angles.append((2*np.pi)*i/36)
-    for angle in angles:
-        new_x = a+round(11*np.cos(angle))
-        new_y = b+round(11*np.sin(angle))
-        if 0<= new_x <= 599 and 0<= new_y <=199:
-            perimeter_points.append((new_x, new_y))
-    return perimeter_points
-
-
-need_to_check_points = []
-for a in range(600):
-    for b in range(200):
-      if matrix[a,b,0] == 0:
-        perimeter_points = perimeter(a,b)
-        for i,j in perimeter_points:  
-            if matrix[i,j,0] == 1:
-                need_to_check_points.append((a,b))
-                break
-            
-
-
+#function to get a point in coordinate system, after rotatin of theta
 def rotate_point(x, y, theta):
     theta = np.radians(theta)
     rotated_x = x * np.cos(theta) - y * np.sin(theta)
     rotated_y = x * np.sin(theta) + y * np.cos(theta)
     return round(rotated_x), round(rotated_y)
 
-print("going in pedda loop")
-robot_clearence=np.zeros((600,200,12))
+# checking robots possiblity to stay at that node in an angle
+robot_clearence=np.zeros((600,200,12)) # creating a matrix that represents if robot can go to that node, in that angle
 
+
+# looping through theta, with 30 deg threshold, gives 12 possibilities
 for theta in range(0, 12):
-    print(theta)
-    points_set=[]
+    # print(theta)
+    points_set=[] # this set stores all the perimeter states in theta angle for (0,0) point
     for i in (-25,10 ):
         for j in range(-20, 21, 2):
             x,y = rotate_point(i, j, theta*30)
-            # window.set_at((50+i,+199-j-50),(0,0,0))
             points_set.append((x,y))
     for i in range(-25, 10, 2):
         for j in (-20, 21):
             x,y = rotate_point(i, j, theta*30)
-            # window.set_at((50+i,+199-j-50),(0,0,0))
             points_set.append((x,y))
-    # print("points set ", len(points_set))
-    # for a in range(600):
-    #     for b in range(200):
-    #       if robot_clearence[a,b,theta]==0:
 
-    #         if matrix[a,b,0] == 0:
-    for a,b in need_to_check_points:
-            #for a single point, at a single orentation
+    # looping through all the states in canvas, for every thets position
+    for a in range(600):
+        for b in range(200):
+          if robot_clearence[a,b,theta]==0:
+
+            if matrix[a,b,0] == 0: # extracting all points in robots perimeter, at a particular angle
                 for i,j in points_set:
                     x = i+a
                     y = j+b
                     if 0<=x<600 and 0<=y<200:
-                        if matrix[x,y,0]!=0:
+                        if matrix[x,y,0]!=0: # checking if any of robots edges touches obstacle
                             robot_clearence[a,b,theta]=1
-                            # robot_clearence[a,b,(theta+1)%12]=1
-                            # robot_clearence[a,b,theta-1]=1
-                            # validate.append((a,b))
                             break
-
-
-
-# corner_clearence_pixels=[]
-# for i in range(600): # looping through all elements in matrix
-#         for j in range(200):
-#             try:
-#               if matrix[i,j,0] == 2:
-#                 if matrix[i-1,j,0] == 0 or matrix[i,j-1,0] == 0 or matrix[i+1,j,0] == 0 or matrix[i,j+1,0] == 0:
-#                     corner_clearence_pixels.append((i,j))
-#             except:
-#                pass
-
-
-# # Loop for Robot Radius
-# for i,j in corner_clearence_pixels:
-#               #if this element in obstacle space is in the corners of obstacle, (to save computation)
-#                 for i1 in range(i-robot_radius, i+1+robot_radius):   # clearence of 5         
-#                     for j1 in range(j-robot_radius,j+1+robot_radius):
-#                         if ((i1-i)**2 + (j1-j)**2) <= robot_radius**2: # circle radius check  
-#                         #   print("camein")
-#                           try:  
-#                             if matrix[i1,j1, 0]==0: # if its a unassigned pixel
-#                               for k in range(12):
-#                                 matrix[i1,j1,k]=5 # assign it to 5
-#                           except:
-#                             pass
 
 #_________________________________________________________________________________________________________________________________________________________
 #END OF OBSTACLE SPACE
 
-#Defining initial and final nodes
-                                
+# Defining initial and final nodes
 # invalid_start = True
 # while invalid_start:
 #     print("\n_____START NODE ______")
 #     start_node_input_x = int(input("Start Node 'X' : "))
 #     start_node_input_y = int(input("Start Node 'Y' : "))
 #     start_node_input_0 = int(input("Start Node 'theta' : "))//30
-#     if start_node_input_x>=0 and start_node_input_x<1200 and start_node_input_y>=0 and start_node_input_x<500 and matrix[start_node_input_x, start_node_input_y, start_node_input_0] == 0:
+#     if start_node_input_x>=0 and start_node_input_x<600 and start_node_input_y>=0 and start_node_input_x<200 and matrix[start_node_input_x, start_node_input_y, start_node_input_0] == 0:
 #             invalid_start = False
 #             start_state = [start_node_input_x, start_node_input_y, start_node_input_0]
 #     else:
 #         print("Invalid Start Node, Input again")
 
 
-# invalid_goal = True
-# while invalid_goal:
-#     print("\n_____GOAL NODE ______")
-#     goal_node_input_x = int(input("Goal Node 'X' : "))
-#     goal_node_input_y = int(input("Goal Node 'Y' : "))
-#     goal_node_input_0 = int(input("Goal Node 'theta' : "))//30
-#     if goal_node_input_x>=0 and goal_node_input_x<1200 and goal_node_input_y>=0 and goal_node_input_y<500 and matrix[goal_node_input_x, goal_node_input_y, goal_node_input_0] == 0:
-#             invalid_goal = False   
-#             goal_state = [goal_node_input_x, goal_node_input_y, goal_node_input_0]
-#     else:
-#         print("Invalid Goal Node, Input again")
+invalid_goal = True
+while invalid_goal:
+    print("\n_____GOAL NODE ______")
+    goal_node_input_x = int(input("Goal Node 'X' : "))
+    goal_node_input_y = int(input("Goal Node 'Y' : "))
+    # goal_node_input_0 = int(input("Goal Node 'theta' : "))//30
+    goal_node_input_0 = 0
+    if goal_node_input_x>=0 and goal_node_input_x<6000 and goal_node_input_y>=0 and goal_node_input_y<2000 and matrix[goal_node_input_x//10, goal_node_input_y//10, 0] == 0:
+            invalid_goal = False   
+            goal_state = [goal_node_input_x//10, goal_node_input_y//10, goal_node_input_0]
+    else:
+        print("Invalid Goal Node, Input again")
                           
 # print("Process finished --- %s seconds ---\n" % (time.time() - start_time)) # DIsplays run time
 print("__________________________")
 print("  Nodes Accepted  \n")
 
-# invalid_stepsize = True
-# while invalid_stepsize:
-#     step_size = int(input("Input Step Size : "))   
-#     if 0<= step_size <= 10:
-#         invalid_stepsize = False
-#     else:
-#         print("Invalid step size, Input again")
-
 # rpm1 = 37
 # rpm2 = 18
 
+rpm1 = int(input("Input RPM 1  : "))   
+rpm2 = int(input("Input RPM 2  : "))   
 
-rpm1 = 37
-rpm2 = 75
+# rpm1 = 37
+# rpm2 = 75
 
-rpm1 = rpm1*(2*np.pi/60)
-rpm2 = rpm2*(2*np.pi/60)
+#conevrting rpm to angular velocities
+u1 = rpm1*(2*np.pi/60)
+u2 = rpm2*(2*np.pi/60)
 
+#declaring variables
+goal_treshold = 3 # Goal_ threshold
 timestep = 1
 
-actions = [[0, rpm1],[0,rpm2],[rpm1,rpm2],[rpm1,rpm1],[rpm2,rpm2],[rpm2,rpm1],[rpm2,0],[rpm1,0]]
-
+actions = [[0, u1],[0,u2],[u1,u2],[u1,u1],[u2,u2],[u2,u1],[u2,0],[u1,0]]
 
 print("__________________________")
-print("  Step size Accepted  ")
+print("  RPM Accepted  ")
 print("\n  Computing Path .....  ")
 
 #_________________________________________________________________________________________________________________________________________________________
@@ -387,46 +285,26 @@ print("\n  Computing Path .....  ")
 
 #Defining initial and final nodes
 
-# start_state = [50,100,0] #state of start point
-# goal_state = [550,120,0] #state of Goal point
-
 start_state = [50,100,0] #state of start point
-goal_state = [550,30,0] #state of Goal point
-# goal_state = [430,200,40] #state of Goal point
+# goal_state = [580,80,0] #state of Goal point
+
 # start_state = [50,100,0] #state of start point
-# goal_state = [250,120,0] #state of Goal point
-
-goal_treshold = 3 # Goal_ threshold
-
-closed_list = []
-all_ontheway=[]
-
-open_dict = {} #heaoq for open list
-open_heap = []
+# goal_state = [goal_state[0]/10,goal_state[1]/10] #state of Goal point
 
 
-from_action={}
-
-all_children_plot_dict = {}
-
-start_node=node_class(0,0,no_of_nodes,0,start_state)
+closed_list = [] # closed list stores ecplored states, containing its index, parent index and corrected state
+open_heap = [] # heap for open list
+open_dict = {} # dict | key = child state | value = Parent object of node_class class 
 
 
-# costs[tuple(sc(start_state))] = [0,0,0]
-# parent[tuple(sc(start_state))] = [start_state]
-# open_list.append([costs[tuple(sc(start_state))][0], costs[tuple(sc(start_state))][1], costs[tuple(sc(start_state))][2], start_state, sc(start_state)]) # adding start node to open list
+from_action={} # dict | key = child state | value = the action from which this is resulted -> gazebo needs this
+all_ontheway=[] # stores explored states points for curve, used for printing states in curves
+all_children_plot_dict = {} #dict | key = parent node | value = all children curves5
+
+start_node=node_class(0,0,no_of_nodes,0,start_state) # start node object
 
 open_dict[tuple(start_state)]=start_node
-# open_heap.append((start_node.C2C + start_node.C2G , start_node.C2G, start_node.C2C, start_node))
-open_heap.append(start_node)
-
-#  FORMAT  ----
-#    total_cost    = 0costs{tuple(sc(start_state))} = [0,0,0]
-#    cost_to_goal  = 0
-#    C2C  = 0
-#    current_state = start_state
-#    parent_state  = start_state
-#    state corrected current node
+open_heap.append(start_node) # append to open heap list
 
 #MATRIX CONVENTIONS
 #    0 = unexplored
@@ -434,107 +312,66 @@ open_heap.append(start_node)
 #    2 = bloat
 #    3 = closed list
 #    4 = in open list
-
 #_____________________________________________________________________________________________________________________________________________________
 #    START OF LOOP
 start_time = time.time() #  Initiating time
 
-print("LOOP STARTED")
+print("A* . . . .")
 a=0
 loop = True
 while loop: 
     if len(open_heap) !=0: # cheking if open list is empty
-        # for i in open_list:
-        #      print(i)
-        current_node = heapq.heappop(open_heap) #extracting node with least total cost
-        # parent_node = parent[tuple(current_state_corrected)]
-        # open_list_corrected.get()
+        current_node = heapq.heappop(open_heap) #extracting node object with least total cost
     else:
         print("No Solution Found") # returning no solution if open list is empty
         break
     
-    current_state_corrected = sc(current_node.Node_State)
-    # del open_dict[tuple(current_state_corrected)]
+    current_state_corrected = sc(current_node.Node_State) # correcting current node state
 
-
-    matrix[current_state_corrected[0],current_state_corrected[1], current_state_corrected[2]] = 3 # marked closed list
-    # closed_list.append((current_node_total_cost,tuple(current_node_state) ,tuple(current_state_corrected), tuple(parent_node))) # adding popped node into closed list
-    # print(type(current_node))
+     # Marking closed list in MATRIX CONVENTION
+    matrix[current_state_corrected[0],current_state_corrected[1], current_state_corrected[2]] = 3
     closed_list.append([current_node.Node_Index, current_node.Parent_Index, tuple(current_state_corrected)]) # adding popped node into closed list    #closed list format
-    #      current node total cost
-    #      current node state
-    #      corrected current node
-    #      parent node
-    
+
     if node_class.ifgoalstate(current_node, goal_treshold, goal_state): #checking if the current state is goal state
         print("\nGoal Reached")
         points_list = backtrack(closed_list)
-        # print(current_node_total_cost, current_node_c2g, current_node_c2c, current_node_state, parent_node, current_state_corrected)
-        # points_list = backtrack(closed_list) # perform backtracking if goal state is reached
-        # print(points_list)
         break
-    
-    # children_set -> nodes and cost obtained from all children
-    # children_set=[]
-    a+=1
-    children_plot=[]
-    for action in actions:
-      child, ontheway, step = current_node.child(action[0],action[1])
-    #   step = 0.1
+
+    children_plot=[] # curve plots for all children
+    for action in actions: # for all possible actions
+      child, ontheway, step = current_node.child(action[0],action[1]) # extracting child state, its curve plot, cost - curve length
       children_plot.append(ontheway) # for explored states plotting
+      child_corrected = sc(child) #corrected state for children
+      
+      if 0<= child_corrected[0] < 600 and 0<= child_corrected[1] <200: 
+        # checking if child state is possible for robot to go without colliding
+        if robot_clearence[child_corrected[0],child_corrected[1],child_corrected[2]] ==0:
 
-    # children_set = node_class.Actions(step_size, current_node) # performing actions to get children
-
-    # for child in children_set:
-      if 0<= child[0] <= 599 and 0<= child[1] <= 199:
-        # print(child)
-       child_corrected = sc(child)
-       if robot_clearence[child_corrected[0],child_corrected[1],child_corrected[2]] ==0:
-
-        # checking if child is in the obstacle space
-
-        child_matrix_value = matrix[child_corrected[0],child_corrected[1],child_corrected[2]]
-
-        if child_matrix_value == 4:
-                    # open_list_states_set = list(np.array(open_list,dtype= object)[:,5])
-                    # index = open_list_states_set.index(child_corrected)   # #finding index of child node, from open list
-                    existing_node = open_dict[tuple(child_corrected)]
+            # checking if child is in open list, this means its not in obstacle
+            if matrix[child_corrected[0],child_corrected[1],child_corrected[2]] == 4:
+                    existing_node = open_dict[tuple(child_corrected)] # extracting child node object, if in open list
 
                     if current_node.C2C + step < existing_node.C2C:  # comparing cost to come
-                        from_action[tuple(child_corrected)]= action
-                        
-                        # print(existing_node)
+                        from_action[tuple(child_corrected)]= action  # updating its from action
+                        existing_node.C2C = current_node.C2C + step  # updating its cost to come
+                        existing_node.Parent_Index = current_node.Node_Index  # updating its parent state       
 
-                        existing_node.C2C = current_node.C2C + step  # updating its cost
-                        # costs[tuple(child_corrected)][0] =  current_node.C2C + current_node.C2C # updating its cost
-                        existing_node.Parent_Index = current_node.Node_Index  # updating its parent state
-                        # open_dict[tuple(child_corrected)]=current_node
-                    # print(existing_node)
-                        # open_dict[tuple(child_corrected)] = existing_node
-                        # print(open_dict[tuple(child_corrected)])
-                        # print("---")
-                    
-
-        elif child_matrix_value == 0: # if the state is not in open list, then creating a state, adding it to open list
-                    from_action[tuple(child_corrected)]= action
-                    # parent_child_states.append((current_state_corrected, child_corrected))
-                    all_ontheway.append(ontheway)
-                    dist = np.sqrt((child_corrected[0]-goal_state[0])**2+(child_corrected[1]-goal_state[1])**2)
-
-                    # costs[tuple(child_corrected)]=[(current_node_c2c+step_size+(1*dist)), dist, current_node_c2c+step_size]
-                    # parent[tuple(child_corrected)]=current_node_state
+            # if not in open list, then it should be unexplored node
+            elif matrix[child_corrected[0],child_corrected[1],child_corrected[2]] == 0: # if the state is not in open list, then creating a state, adding it to open list
+                    from_action[tuple(child_corrected)]= action # updating its from action
+                    all_ontheway.append(ontheway) # storing its curve plots
+                    # finding distance, C2G
+                    dist = np.sqrt((child_corrected[0]-goal_state[0])**2+(child_corrected[1]-goal_state[1])**2) 
+                    # Creating new child object
                     new_node = node_class(current_node.C2C+step, dist, no_of_nodes, current_node.Node_Index, child)
+                    # adding this to open dict and open heap - open lists
                     open_dict[tuple(child_corrected)]=new_node
-                    # new_node = node_class(current_node.C2C+step_size+(1*dist)), dist, current_node_c2c+step_size, child, child_corrected)
-                    # print(new_node)
-                    # open_list.append(new_node)
                     heapq.heappush(open_heap, new_node)
+                    # udating matrix convention to ' open node '
                     matrix[child_corrected[0],child_corrected[1],child_corrected[2]] = 4
     
+    #plots for all children, for current state
     all_children_plot_dict[tuple(current_state_corrected)]=children_plot
-    # if (time.time() - start_time) > 600:
-    # if a >50:
-    #     break
 
 #________________________________________________________________________________________________________________
 #    END OF LOOP
@@ -559,9 +396,9 @@ blue = (105,135,235)
 # LOOP to transform matrix into this window
 for i in range(600):
     for j in range(200):
-            if matrix[i,j,0]==1: # 1 -> black color showing obstacles
+            if matrix[i,j,0]==1: # 1 -> red color showing obstacles
                 window.set_at((i,199-j),red)
-            elif matrix[i,j,0]==2: # 2-> RED showing bloating part
+            elif matrix[i,j,0]==2: # 2-> black showing bloating part
                 window.set_at((i,199-j),black)
             elif matrix[i,j,0]==5:
                 window.set_at((i,199-j),grey)
@@ -570,119 +407,59 @@ pygame.display.flip() #updating window
 
 # #______________________________________WINDOW IS CREATED
 # Loop to reflect all explored nodes from closed list to pyagme windoe
-
 for i,oneset in enumerate(all_ontheway):
-        # statexy = node[0]
-        # childxy = node[1]
         pygame.draw.lines(window, blue, False, oneset, width = 1 )
         if i%150==0: # rate to reflect the updates on the window
             pygame.display.flip()
 
-pygame.draw.circle(window,black,(start_state[0],199-start_state[1]),5) #plotting start node
+# plotting start node
+pygame.draw.circle(window,black,(start_state[0],199-start_state[1]),5)
 pygame.draw.circle(window,(50,220,50),(start_state[0],199-start_state[1]),3)
 time.sleep(1)
 
-
-# print(points_list)
+# loop to print all states in the path
 for i in points_list[:-1]:
-        # time.sleep(0.5)
-    
-    all_children = all_children_plot_dict[tuple(i)]
+    all_children = all_children_plot_dict[tuple(i)] # to get all 8 curves
     for points_set in all_children: 
         pygame.draw.lines(window, black, False, points_set, width = 1 )
-        # pygame.draw.lines(window, black, tuple((points_list[i][0], 199-points_list[i][1])), tuple((points_list[i+1][0],199-points_list[i+1][1])), width = 1 )
         pygame.display.flip()
 
 
+for i in range(len(points_list)-1):
+    # all_children = all_children_plot_dict[tuple(i)] # to get all 8 curves
+    # for points_set in all_children: 
+        pygame.draw.line(window, red, tuple((points_list[i][0],199 - points_list[i][1])),tuple((points_list[i+1][0], 199 - points_list[i+1][1])) ,width = 1 )
+        pygame.display.flip()
 
-
-
-    def path(Node_State,ul,ur):
-        ontheway=[]
-        # Node_State = (self.Node_State).copy()
-        total = 0
-        step =0
-        dt = timestep/10
-        Xn = Node_State[0]
-        Yn = Node_State[1]
-        thetan = Node_State[2]
-        thetan = (3.14/180)*thetan
-        ontheway.append((Xn, 199-Yn)) # only for display
-        while total<10:
-            total += 1
-            Xs = Xn
-            Ys = Yn
-            thetan += (wheel_radius/track_width)*(ur - ul)*dt
-            Xn += (wheel_radius/2)*(ul+ur)*np.cos(thetan)*dt
-            Yn += (wheel_radius/2)*(ul+ur)*np.sin(thetan)*dt
-            ontheway.append((Xn, 199-Yn)) # only for display
-            step+= np.sqrt((Xn-Xs)**2+(Yn-Ys)**2)
-
-            # pygame.draw.line(window, (0,0,0), (Xs, Ys), (Xn, Yn) , width=1)
-        thetan = (180/3.14)*thetan
-        new_state = [Xn, Yn, thetan]
-        return new_state, ontheway, step
-
-
-
-
+# loop for printing the path
 action_list=[]
 for i in range(len(points_list)-1):
-        
+    camefrom_action = from_action[tuple(points_list[i+1])]
+    action_list.append(camefrom_action)
 
-        camefrom_action = from_action[tuple(points_list[i+1])]
-        action_list.append(camefrom_action)
-
-#         a,b,c = path(points_list[i],camefrom_action[0], camefrom_action[1])
-
-#         # time.sleep(0.5)
-#         # pygame.draw.line(window, red, tuple((points_list[i][0], 199-points_list[i][1])), tuple((points_list[i+1][0],199-points_list[i+1][1])), width = 1 )
-#         pygame.draw.lines(window, red, False, b, width = 1 )
-#         pygame.display.flip()
-
-
+# plotting goal state
 pygame.draw.circle(window,black,(goal_state[0],199-goal_state[1]),5) #plotting end node
 pygame.draw.circle(window,red,(goal_state[0],199-goal_state[1]),3)
+pygame.display.update()
 
-print("Action List")
-# for action in action_list:
-#     print(action)
+
+print("No of Actions :",len(action_list))
 print(action_list)
-print(len(action_list))
-
 print("Weight ", weight)
-
-# Function to capture and store the pixel data of the screen
-# def capture_screen():
-#     screen_data = pygame.surfarray.array3d(window)
-#     return screen_data
-# # Function to redraw the stored pixel data onto the screen
-# def redraw_screen(screen_data):
-#     pygame.surfarray.blit_array(window, screen_data)
-# screen_data = capture_screen()
-# LOop to reflect the points in the path on the pygame window
-# for i in range(len(points_list)):
-#         time.sleep(0.1)
-#         redraw_screen(screen_data)
-#         pygame.draw.circle(window,red, (points_list[i][0], 499-points_list[i][1]), robot_radius)
-#         pygame.draw.circle(window, black, (points_list[i][0], 499-points_list[i][1]), robot_radius, 1)
-#         pygame.display.flip()
-
-
-
-
 print(" ------------------------ SUCCESSFULLT TRACKED ------------------------")
-print("------- A*------- RUTHWIK - ZAHIR ------")
+# print("------- A*-------------")
 
 #LOOP to keep py game running untill manually closed
 
 run = True
 while run: 
     for event in pygame.event.get():
-     if event.type ==pygame.QUIT:
-        run = False
-    
+        if event.type ==pygame.QUIT:
+    # time.sleep(5)
+            run = False
     pygame.display.update()
+
+# time.sleep(5)
 pygame.quit()
 #_________________________________________________________________________________________________________________________________________________________
 #    END OF PYGAME
