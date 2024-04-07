@@ -4,7 +4,6 @@ Simulation of turtlebot3 - _waffle_,  in Gazebo using A star Algorithm - Path pl
 ## Team Members
 
 Ruthwik Dasyam - ruthwik - 120405563
-
 Zahiruddin Mahammad - zahirmd - 120407796
 
 ## Libraries Used
@@ -14,14 +13,16 @@ Python Libraries used for A*
  - pygame
  - time 
 
-
 # Part 1
-
 _Link_ - https://github.com/ruthwikdasyam/A_Star_Project_32.git
 
 ### Instructions
+<<<<<<< HEAD
 
 Directly run the code {p1_ruthwik_zahir.py} in terminal or in code editor(s) (VScode, PyCharm)
+=======
+Directly run the code {a_star_ruthwik_zahiruddin.py} in terminal or in code editor(s) (VScode, PyCharm)
+>>>>>>> 00c47c494f5fa1a55483a28c55741782a673706e
 
 Map Dimensions - _600cm x 200cm_
  
@@ -89,64 +90,53 @@ In 2nd Terminal - Run the python file to compute path and execute it in gazebo
 ros2 run turtlebot3_project3 p2sim.py
 ```
 
-### Inputs
-1. Clearance: 
+### Steps
+1. Input Clearance: 
 
     - _Clearance value for the obstacles_ - _centimeters_ {int}
 
+_[Note]: Wait for the map to get generated
 
-_[Note]: The Map gets generated based on the Clearance, it might take upto 5 seconds_
-
-
-2. Goal Point 
-    
-    -  _Coordinates w.r.t Cartesian frame_ 
-
+2. Input Goal Point
+   
+    -  _Coordinates w.r.t Cartesian frame_  
         - _x_ - _millimeters_ {int}
-
         - _y_ - _millimeters_ {int}
 
 
-3. RPM - _Left and Right_
-    
+4. Input RPM - _Left and Right_
     - _RPM1 - {int}_ 
-
     - _RPM2 - {int}_
 
-## Sample Inputs - Part 2
+## Sample Inputs :
 #### Sample 1:
 *  _Clearance_ : 5
-
-* _Goal Point_ :
-    - x - 5500
-    - y - 1000
-
-* _RPM_ :
-    - RPM1 - 37
-    - RPM2 - 75
+* _Goal Point_ :    - x - 5500
+                    - y - 1000
+* _RPM_ :  - RPM1 - 37
+           - RPM2 - 75
 
 #### Sample 2:
 * _Clearance_ : 5
-
-* _Goal Point_ :
-    - x - 5500
-    - y - 600
-
-* _RPM_ :
-    - RPM1 - 40
-    - RPM2 - 80
+* _Goal Point_ :   - x - 5500
+                   - y - 600
+* _RPM_ :  - RPM1 - 40
+           - RPM2 - 80
 
 
-
-- Wait for the Algorithm to run
+- Wait for the A star to complete path finding
 - Once Goal Node is found, Backtracking is executed
 - The pygame window displays the nodes explored and path from start to end node
-- Close the pygame window to exit
-- Gazebo will automatically fires up turtlebot and you can see turtlebot following the same path, that is shown
-
+- CLOSE the pygame window eith x button at the top right corner of the window to EXIT
+- GAZEBO will automatically fires up turtlebot and you can see turtlebot following the same path, and Stops after reaching the Goal
+  
 
 #### _[Important Note]_
-* Sometimes the Robot in Gazebo might fail to travel in the path, this is dependent on Real Time Factor of Gazebo which affects the rate of publishing velocities
+* The angular velocities computed are multiplied by a consant p_angular
+* This is to compensate the algorithm, Simulation performance differences
+* The constant is based on the Systems Real time factor, and Performance capabilities
+* Based on our hardware, and Real time factor (1), The p_linear is 1, and p_angular is set to 1.05
+* Hence, this p_linear and p_angular are to be adjusted based on system
 
     [In the submitted video, the "_Real Time Factor is 1_" and ]
 
