@@ -49,7 +49,7 @@ class node_class:
         if weight*self.C2G + self.C2C != weight*other.C2G + other.C2C:
             return weight*self.C2G + self.C2C < weight*other.C2G + other.C2C
         
-        elif self.C2G != self.C2G:
+        elif self.C2G != other.C2G:
             return self.C2G < other.C2G
         # If costs are equal, then compare based on Node_Index
         return self.C2C < other.C2C
@@ -170,7 +170,7 @@ print("******* Map **********")
 
 print("Input Clearence Value ---")
 # clearence = int(input(" "))
-clearence = 10
+clearence = 5
 
 print("Input Robot Radius")
 # robot_radius = int(input(" "))
@@ -234,19 +234,19 @@ def rotate_point(x, y, theta):
     rotated_y = x * np.sin(theta) + y * np.cos(theta)
     return round(rotated_x), round(rotated_y)
 
-print("going in pedda loop")
+# print("going in pedda loop")
 robot_clearence=np.zeros((600,200,12))
 
 for theta in range(0, 12):
     print(theta)
     points_set=[]
-    for i in (-22, 9):
-        for j in range(-16, 17, 2):
+    for i in (-25,10 ):
+        for j in range(-20, 21, 2):
             x,y = rotate_point(i, j, theta*30)
             # window.set_at((50+i,+199-j-50),(0,0,0))
             points_set.append((x,y))
-    for i in range(-22, 9, 2):
-        for j in (-16, 17):
+    for i in range(-25, 10, 2):
+        for j in (-20, 21):
             x,y = rotate_point(i, j, theta*30)
             # window.set_at((50+i,+199-j-50),(0,0,0))
             points_set.append((x,y))
@@ -343,7 +343,7 @@ rpm2 = 75
 rpm1 = rpm1*(2*np.pi/60)
 rpm2 = rpm2*(2*np.pi/60)
 
-timestep = 1.2
+timestep = 1
 
 actions = [[0, rpm1],[0,rpm2],[rpm1,rpm2],[rpm1,rpm1],[rpm2,rpm2],[rpm2,rpm1],[rpm2,0],[rpm1,0]]
 
@@ -357,11 +357,11 @@ print("\n  Computing Path .....  ")
 
 #Defining initial and final nodes
 
-start_state = [50,100,0] #state of start point
-goal_state = [570,120,0] #state of Goal point
+# start_state = [50,100,0] #state of start point
+# goal_state = [550,120,0] #state of Goal point
 
-# start_state = [50,100,90] #state of start point
-# goal_state = [450,20,0] #state of Goal point
+start_state = [50,100,0] #state of start point
+goal_state = [550,30,0] #state of Goal point
 # goal_state = [430,200,40] #state of Goal point
 # start_state = [50,100,0] #state of start point
 # goal_state = [250,120,0] #state of Goal point
@@ -552,6 +552,8 @@ pygame.draw.circle(window,black,(start_state[0],199-start_state[1]),5) #plotting
 pygame.draw.circle(window,(50,220,50),(start_state[0],199-start_state[1]),3)
 time.sleep(1)
 
+
+# print(points_list)
 for i in points_list[:-1]:
         # time.sleep(0.5)
     
