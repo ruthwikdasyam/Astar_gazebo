@@ -7,12 +7,22 @@ import sys
 import select
 import tty
 import termios
+import time
 from pynput import keyboard
-import p1pygame
+# import p1pygame
+
+
+timestep = 1.2
+wheel_radius = 3.3 # r
+track_width = 28.7 # L
+
+action_list = [[3.874630939427411, 3.874630939427411], [3.874630939427411, 0], [0, 3.874630939427411], [3.874630939427411, 0], [3.874630939427411, 3.874630939427411], [3.874630939427411, 3.874630939427411], [0, 3.874630939427411], [3.874630939427411, 0], [3.874630939427411, 7.853981633974483], [3.874630939427411, 3.874630939427411], [3.874630939427411, 7.853981633974483], [3.874630939427411, 3.874630939427411], [0, 3.874630939427411], [3.874630939427411, 3.874630939427411], [7.853981633974483, 3.874630939427411], [3.874630939427411, 3.874630939427411], [3.874630939427411, 0], [3.874630939427411, 3.874630939427411], [3.874630939427411, 0], [0, 3.874630939427411], [3.874630939427411, 0], [3.874630939427411, 3.874630939427411], [3.874630939427411, 0], [0, 3.874630939427411], [3.874630939427411, 0], [0, 3.874630939427411], [3.874630939427411, 0], [0, 3.874630939427411], [3.874630939427411, 0], [0, 3.874630939427411], [3.874630939427411, 0], [0, 3.874630939427411], [3.874630939427411, 3.874630939427411], [3.874630939427411, 3.874630939427411], [3.874630939427411, 3.874630939427411], [0, 3.874630939427411], [3.874630939427411, 3.874630939427411], [7.853981633974483, 7.853981633974483], [0, 3.874630939427411], [3.874630939427411, 3.874630939427411], [3.874630939427411, 3.874630939427411], [3.874630939427411, 3.874630939427411], [0, 3.874630939427411], [3.874630939427411, 0], [3.874630939427411, 3.874630939427411], [3.874630939427411, 7.853981633974483], [3.874630939427411, 0], [3.874630939427411, 3.874630939427411], [3.874630939427411, 3.874630939427411], [3.874630939427411, 0]]
+action_list.append([0,0])
+
 
 # Define key codes
-LIN_VEL_STEP_SIZE = 0.1
-ANG_VEL_STEP_SIZE = 0.1
+# LIN_VEL_STEP_SIZE = 0.1
+# ANG_VEL_STEP_SIZE = 0.1
 
 class KeyboardControlNode(Node):
 
@@ -23,62 +33,55 @@ class KeyboardControlNode(Node):
 
         self.settings = termios.tcgetattr(sys.stdin)
 
-    def getKey(self):
-        """Get the key that is pressed"""
-        tty.setraw(sys.stdin.fileno())
-        rlist, _, _ = select.select([sys.stdin], [], [], 0.1)
-        if rlist:
-            key = sys.stdin.read(1)
-        else:
-            key = ''
+    # def getKey(self):
+    #     """Get the key that is pressed"""
+    #     tty.setraw(sys.stdin.fileno())
+    #     rlist, _, _ = select.select([sys.stdin], [], [], 0.1)
+    #     if rlist:
+    #         key = sys.stdin.read(1)
+    #     else:
+    #         key = ''
 
-        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, self.settings)
-        return key
+    #     termios.tcsetattr(sys.stdin, termios.TCSADRAIN, self.settings)
+    #     return key
 
     def run_keyboard_control(self):
-        """Run the keyboard control node"""
-        
-        self.msg = """
-        Control Your Car!
-        ---------------------------
-        Moving around:
-            w
-        a    s    d
 
-        q : force stop
-
-        Esc to quit
-        """
-
-        self.get_logger().info(self.msg)
+        # self.get_logger().info(self.msg)
         velocity_message = Twist()
         linear_vel=0.0
         angular_vel=0.0
 
 
-        while True:
-            key = self.getKey()
-            if key is not None:
-                if key == '\x1b':  # Escape key
-                    break
-                elif key == 'q':  # Quit
-                    linear_vel=0.0
-                    angular_vel=0.0
-                elif key == 'w':  # Forward
-                    linear_vel += LIN_VEL_STEP_SIZE
-                elif key == 's':  # Reverse
-                    linear_vel -= LIN_VEL_STEP_SIZE
-                elif key == 'd':  # Right
-                    angular_vel -= ANG_VEL_STEP_SIZE
-                elif key == 'a':  # Left
-                    angular_vel += ANG_VEL_STEP_SIZE
+        for i,action in enumerate(action_list):
+            # key = self.getKey()
+            # if key is not None:
+            #     if key == '\x1b':  # Escape key
+            #         break
+            #     elif key == 'q':  # Quit
+            #         linear_vel=0.0
+            #         angular_vel=0.0
+            #     elif key == 'w':  # Forward
+            #         linear_vel += LIN_VEL_STEP_SIZE
+            #     elif key == 's':  # Reverse
+            #         linear_vel -= LIN_VEL_STEP_SIZE
+            #     elif key == 'd':  # Right
+            #         angular_vel -= ANG_VEL_STEP_SIZE
+            #     elif key == 'a':  # Left
+            #         angular_vel += ANG_VEL_STEP_SIZE
 
+                linear_vel_cm = (wheel_radius/2)*(action[0]+action[1])
+                angular_vel_cm = (wheel_radius/track_width)*(action[1]-action[0])
+
+                linear_vel = (linear_vel_cm/100)
+                angular_vel = (angular_vel_cm)
 
                 if angular_vel>1.0:
                         angular_vel=1.0
                 if angular_vel<-1.0:
                     angular_vel=-1.0
 
+                print("\nAction ",i)
                 print("Steer Angle",angular_vel)
                 print("Linear Velocity",linear_vel)
                 
@@ -87,6 +90,7 @@ class KeyboardControlNode(Node):
                 velocity_message.angular.z = angular_vel
                 
                 self.cmd_vel_pub.publish(velocity_message)
+                time.sleep(timestep)
 
 def main(args=None):
     rclpy.init(args=args)

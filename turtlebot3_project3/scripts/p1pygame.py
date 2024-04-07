@@ -22,7 +22,7 @@ print("\n-----------------------------------------------------------------------
 wheel_radius = 3.3 # r
 track_width = 28.7 # L
 no_of_nodes = 0
-weight = 1.2
+weight = 1
 class node_class:
     all_states = []
     def __init__(self, C2C : float, C2G : float, Node_Index: int, Parent_Index: int, State: np.array) -> None:
@@ -137,7 +137,7 @@ def backtrack(closedlist): # Function for backtracking
                 parentindex = node[1]
                 break
             
-    # states.append(node1_state)
+    states.append(start_state)
     states.reverse()
     return states
 
@@ -170,7 +170,7 @@ print("******* Map **********")
 
 print("Input Clearence Value ---")
 # clearence = int(input(" "))
-clearence = 5
+clearence = 10
 
 print("Input Robot Radius")
 # robot_radius = int(input(" "))
@@ -343,7 +343,7 @@ rpm2 = 75
 rpm1 = rpm1*(2*np.pi/60)
 rpm2 = rpm2*(2*np.pi/60)
 
-timestep = 1
+timestep = 1.2
 
 actions = [[0, rpm1],[0,rpm2],[rpm1,rpm2],[rpm1,rpm1],[rpm2,rpm2],[rpm2,rpm1],[rpm2,0],[rpm1,0]]
 
@@ -363,8 +363,8 @@ goal_state = [570,120,0] #state of Goal point
 # start_state = [50,100,90] #state of start point
 # goal_state = [450,20,0] #state of Goal point
 # goal_state = [430,200,40] #state of Goal point
-# start_state = [50,50,30] #state of start point
-# goal_state = [250,200,40] #state of Goal point
+# start_state = [50,100,0] #state of start point
+# goal_state = [250,120,0] #state of Goal point
 
 goal_treshold = 3 # Goal_ threshold
 
@@ -562,21 +562,60 @@ for i in points_list[:-1]:
         pygame.display.flip()
 
 
+
+
+
+    def path(Node_State,ul,ur):
+        ontheway=[]
+        # Node_State = (self.Node_State).copy()
+        total = 0
+        step =0
+        dt = timestep/10
+        Xn = Node_State[0]
+        Yn = Node_State[1]
+        thetan = Node_State[2]
+        thetan = (3.14/180)*thetan
+        ontheway.append((Xn, 199-Yn)) # only for display
+        while total<10:
+            total += 1
+            Xs = Xn
+            Ys = Yn
+            thetan += (wheel_radius/track_width)*(ur - ul)*dt
+            Xn += (wheel_radius/2)*(ul+ur)*np.cos(thetan)*dt
+            Yn += (wheel_radius/2)*(ul+ur)*np.sin(thetan)*dt
+            ontheway.append((Xn, 199-Yn)) # only for display
+            step+= np.sqrt((Xn-Xs)**2+(Yn-Ys)**2)
+
+            # pygame.draw.line(window, (0,0,0), (Xs, Ys), (Xn, Yn) , width=1)
+        thetan = (180/3.14)*thetan
+        new_state = [Xn, Yn, thetan]
+        return new_state, ontheway, step
+
+
+
+
 action_list=[]
 for i in range(len(points_list)-1):
         
-        action_list.append(from_action[tuple(points_list[i])])
-        # time.sleep(0.5)
-        pygame.draw.line(window, red, tuple((points_list[i][0], 199-points_list[i][1])), tuple((points_list[i+1][0],199-points_list[i+1][1])), width = 1 )
-        # pygame.draw.line(window, red, False, all_ontheway[tuple(i)] , width = 1 )
-        pygame.display.flip()
+
+        camefrom_action = from_action[tuple(points_list[i+1])]
+        action_list.append(camefrom_action)
+
+#         a,b,c = path(points_list[i],camefrom_action[0], camefrom_action[1])
+
+#         # time.sleep(0.5)
+#         # pygame.draw.line(window, red, tuple((points_list[i][0], 199-points_list[i][1])), tuple((points_list[i+1][0],199-points_list[i+1][1])), width = 1 )
+#         pygame.draw.lines(window, red, False, b, width = 1 )
+#         pygame.display.flip()
 
 
 pygame.draw.circle(window,black,(goal_state[0],199-goal_state[1]),5) #plotting end node
 pygame.draw.circle(window,red,(goal_state[0],199-goal_state[1]),3)
 
 print("Action List")
-# print(action_list)
+# for action in action_list:
+#     print(action)
+print(action_list)
 print(len(action_list))
 
 print("Weight ", weight)
