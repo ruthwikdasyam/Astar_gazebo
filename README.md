@@ -141,7 +141,8 @@ _[Note]_: Wait for the map to get generated
 * _RPM_ :  
     - RPM1 -> 40
     - RPM2 -> 80
-
+    
+_(position is possible, beacause of Orentation based collision used in code)_
 
 - Wait for the A star to complete path finding
 - Once Goal Node is found, Backtracking is executed
