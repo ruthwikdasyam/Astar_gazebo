@@ -4,6 +4,7 @@ Simulation of turtlebot3 - _waffle_,  in Gazebo using A star Algorithm - Path pl
 ## Team Members
 
 Ruthwik Dasyam - ruthwik - 120405563
+
 Zahiruddin Mahammad - zahirmd - 120407796
 
 ## Libraries Used
@@ -103,7 +104,7 @@ ros2 run turtlebot3_project3 p2sim.py
 
     - _Clearance value for the obstacles_ - _centimeters_ {int}
 
-_[Note]: Wait for the map to get generated
+_[Note]_: Wait for the map to get generated
 
 2. Input Goal Point
    
