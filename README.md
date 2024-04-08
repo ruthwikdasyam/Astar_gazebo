@@ -71,6 +71,8 @@ _[Note]: The Map gets generated based on the Clearance, it might take upto 5 sec
 * _RPM_ :   RPM1 -> 40;
             RPM2 -> 80
 
+Video - https://drive.google.com/file/d/1KtNZUtSoOKSX141z57PvV5w9fyNL2sz7/view?usp=sharing 
+
 # Part 2
 
 _Link_ - https://github.com/ruthwikdasyam/Astar_gazebo.git
@@ -133,6 +135,8 @@ _[Note]_: Wait for the map to get generated
     - RPM1 -> 37
     - RPM2 -> 75
 
+Video - https://drive.google.com/file/d/1A-PAFOKzTDWueShuHC6AR_gtkzp7DZjp/view?usp=sharing
+
 #### Sample 2:
 * _Clearance_ : 5
 * _Goal Point_ :   
@@ -141,7 +145,9 @@ _[Note]_: Wait for the map to get generated
 * _RPM_ :  
     - RPM1 -> 40
     - RPM2 -> 80
-    
+
+Video - https://drive.google.com/file/d/1tjncbe_xqDMq1B8k_F24JRakNnHsi_HH/view?usp=sharing
+
 _(position is possible, beacause of Orentation based collision used in code)_
 
 - Wait for the A star to complete path finding
