@@ -103,7 +103,7 @@ def backtrack(closedlist): # Function for backtracking
                 parentindex = node[1]
                 break
             
-    states.append(start_state)
+    states.append(sc(start_state))
     states.reverse() # reversing the list
     return states
 
