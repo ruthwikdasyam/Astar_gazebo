@@ -59,6 +59,17 @@ _[Note]: The Map gets generated based on the Clearance, it might take upto 5 sec
     - _RPM2 - {int}_
 
 
+## Sample Input :
+
+* _Clearance_ : 5
+* _Start Point_ :    x -> 1000;
+                    y -> 1000;
+                    theta -> 30
+* _Goal Point_ :   x -> 5500;
+                   y -> 600
+* _RPM_ :   RPM1 -> 40;
+            RPM2 -> 80
+
 # Part 2
 
 _Link_ - https://github.com/ruthwikdasyam/Astar_gazebo.git
@@ -108,17 +119,21 @@ _[Note]: Wait for the map to get generated
 ## Sample Inputs :
 #### Sample 1:
 *  _Clearance_ : 5
-* _Goal Point_ :    - x - 5500
-                    - y - 1000
-* _RPM_ :  - RPM1 - 37
-           - RPM2 - 75
+* _Goal Point_ :    
+    - x -> 5500
+    - y -> 1000
+* _RPM_ :  
+    - RPM1 -> 37
+    - RPM2 -> 75
 
 #### Sample 2:
 * _Clearance_ : 5
-* _Goal Point_ :   - x - 5500
-                   - y - 600
-* _RPM_ :  - RPM1 - 40
-           - RPM2 - 80
+* _Goal Point_ :   
+    - x -> 5500
+    - y -> 600
+* _RPM_ :  
+    - RPM1 -> 40
+    - RPM2 -> 80
 
 
 - Wait for the A star to complete path finding
@@ -135,7 +150,7 @@ _[Note]: Wait for the map to get generated
 * Based on our hardware, and Real time factor (1), The p_linear is 1, and p_angular is set to 1.05
 * Hence, this p_linear and p_angular are to be adjusted based on system
 
-    [In the submitted video, the "_Real Time Factor is 1_" and ]
+    [In the submitted video, the "_Real Time Factor is 1_"]
 
 
 
