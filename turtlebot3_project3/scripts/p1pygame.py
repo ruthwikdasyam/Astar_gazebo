@@ -1,7 +1,7 @@
 #______________________________________________________________________________________________________
 # GITHUB LINK
 
-# https://github.com/ruthwikdasyam/A_Star_Project31.git
+# https://github.com/ruthwikdasyam/Astar_gazebo.git
 #______________________________________________________________________________________________________
 import heapq
 import numpy as np
