@@ -444,7 +444,7 @@ pygame.display.update()
 
 
 print("No of Actions :",len(action_list))
-print(action_list)
+# print(action_list)
 print("Weight ", weight)
 print(" ------------------------ SUCCESSFULLT TRACKED ------------------------")
 # print("------- A*-------------")

@@ -86,7 +86,12 @@ The python executable computes the path and visualizes in Pygame window
 Create a workspace and src and paste the package "turtlebot3_project3"
 ```
 mkdir -p ~/project3_ws/src
-cd ~/project3_ws/src
+```
+Build the Package
+```
+cd ~/project3_ws
+colcon build
+source install/setup.bash
 ```
 
 In 1st Terminal - Launch the Simulation using the command below
@@ -96,6 +101,7 @@ ros2 launch turtlebot3_project3 competition_world.launch.py
 
 In 2nd Terminal - Run the python file to compute path and execute it in gazebo
 ```
+source install/setup.bash
 ros2 run turtlebot3_project3 p2sim.py
 ```
 
@@ -130,7 +136,7 @@ _[Note]_: Wait for the map to get generated
 #### Sample 2:
 * _Clearance_ : 5
 * _Goal Point_ :   
-    - x -> 5500
+    - x -> 5800
     - y -> 600
 * _RPM_ :  
     - RPM1 -> 40
