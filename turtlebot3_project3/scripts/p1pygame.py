@@ -22,7 +22,7 @@ print("\n-----------------------------------------------------------------------
 wheel_radius = 3.3 # r
 track_width = 28.7 # L 
 no_of_nodes = 0
-weight = 1
+weight = 0.9
 class node_class:
     all_states = []
     def __init__(self, C2C : float, C2G : float, Node_Index: int, Parent_Index: int, State: np.array) -> None:
@@ -375,7 +375,7 @@ rpm2 = rpm2*(2*np.pi/60)
 
 timestep = 1
 
-actions = [[0, rpm1],[0,rpm2],[rpm1,rpm2],[rpm1,rpm1],[rpm2,rpm2],[rpm2,rpm1],[rpm2,0],[rpm1,0]]
+actions = [[0,rpm2],[rpm1,rpm2],[rpm2,rpm2],[rpm2,rpm1],[rpm2,0]]
 
 
 print("__________________________")
@@ -391,12 +391,12 @@ print("\n  Computing Path .....  ")
 # goal_state = [550,120,0] #state of Goal point
 
 start_state = [50,100,0] #state of start point
-goal_state = [550,30,0] #state of Goal point
+goal_state = [570,50,0] #state of Goal point
 # goal_state = [430,200,40] #state of Goal point
 # start_state = [50,100,0] #state of start point
 # goal_state = [250,120,0] #state of Goal point
 
-goal_treshold = 3 # Goal_ threshold
+goal_treshold = 10 # Goal_ threshold
 
 closed_list = []
 all_ontheway=[]
@@ -410,7 +410,7 @@ from_action={}
 all_children_plot_dict = {}
 
 start_node=node_class(0,0,no_of_nodes,0,start_state)
-
+from_action[tuple(start_state)]=actions[3]
 
 # costs[tuple(sc(start_state))] = [0,0,0]
 # parent[tuple(sc(start_state))] = [start_state]
@@ -494,6 +494,10 @@ while loop:
         # checking if child is in the obstacle space
 
         child_matrix_value = matrix[child_corrected[0],child_corrected[1],child_corrected[2]]
+        #checking action of parent node
+        if action == from_action[tuple(current_state_corrected)]:
+            step = step*0.7
+
 
         if child_matrix_value == 4:
                     # open_list_states_set = list(np.array(open_list,dtype= object)[:,5])
@@ -647,7 +651,10 @@ pygame.draw.circle(window,red,(goal_state[0],199-goal_state[1]),3)
 print("Action List")
 # for action in action_list:
 #     print(action)
+action_list.append([0,0])
+
 print(action_list)
+
 print(len(action_list))
 
 print("Weight ", weight)
